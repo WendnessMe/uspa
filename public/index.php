@@ -9,7 +9,9 @@ use WendnessMe\Uspa\Controllers;
 $utils = new Utils();
 // $config = new Config();
 // $res = $config->query("SELECT * FROM test");
+// echo "<pre>";
 // var_dump($res);
+// echo "</pre>";
 
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
 // $uri = $_SERVER['REQUEST_URI'];
@@ -18,9 +20,11 @@ $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
 
 $routes = [
   '/' => 'HomeController@index',
-  '/test' => 'HomeController@test',
-  '/outro' => 'HomeController@outro',
+  // '/test' => 'HomeController@test',
+  // '/outro' => 'HomeController@outro',
   '/api' => 'ApiController@hi',
+  '/all' => 'ApiController@getAll',
+  '/api/get' => 'ApiController@getAll',
 ];
 
 if (array_key_exists($uri, $routes)) {
@@ -30,6 +34,7 @@ if (array_key_exists($uri, $routes)) {
   $import = new $cont();
   echo $import->hi();
   echo "<br>";
+  $utils->dd($import->getAll());
 }
 
 if (!empty($routes)) {
