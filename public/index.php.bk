@@ -1,0 +1,60 @@
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use WendnessMe\Uspa\Config;
+use WendnessMe\Uspa\Utils;
+
+$utils = new Utils();
+// $config = new Config();
+// $res = $config->query("SELECT * FROM test");
+// var_dump($res);
+
+// Load any necessary configurations, libraries, or autoloaders here
+// For example, you might autoload Composer dependencies:
+// require_once __DIR__ . '/../vendor/autoload.php';
+
+// Get the requested URI
+$requestUri = $_SERVER['REQUEST_URI'];
+
+// Remove the base URL path if your application is not at the root of the domain
+$baseUrlPath = '/../'; // Adjust this to your project's base URL path
+$requestPath = str_replace($baseUrlPath, '', $requestUri);
+
+// Define your routes and their corresponding controllers/methods
+$routes = [
+    '/' => 'HomeController@index',
+    '/about' => 'AboutController@index',
+    // Add more routes here
+];
+
+// Find the appropriate controller and method based on the requested path
+if (array_key_exists($requestPath, $routes)) {
+    $route = $routes[$requestPath];
+    list($controllerName, $methodName) = explode('@', $route);
+
+    // Include the corresponding controller file
+    $controllerFile = __DIR__ . '/../app/controllers/' . $controllerName . '.php';
+    if (file_exists($controllerFile)) {
+        require_once $controllerFile;
+        
+        // Create an instance of the controller and call the method
+        $controller = new $controllerName();
+        if (method_exists($controller, $methodName)) {
+            $controller->$methodName();
+        } else {
+            // Handle 404 - Method not found
+            http_response_code(404);
+            echo '404 - Page not found';
+        }
+    } else {
+        // Handle 404 - Controller not found
+        http_response_code(404);
+        echo '404 - Page not found';
+    }
+} else {
+    // Handle 404 - Route not found
+    http_response_code(404);
+    echo '404 - Page not found';
+}
+
