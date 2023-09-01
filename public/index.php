@@ -10,14 +10,16 @@ $utils = new Utils();
 // $res = $config->query("SELECT * FROM test");
 // var_dump($res);
 
-$uri = $_SERVER['REQUEST_URI'];
+$uri = parse_url($_SERVER['REQUEST_URI'])['path'];
+// $uri = $_SERVER['REQUEST_URI'];
+// $uriPath = parse_url($uri);
+// $utils->dd($uriPath);
 
 $routes = [
   '/' => 'HomeController@index',
   '/test' => 'HomeController@test',
   '/outro' => 'HomeController@outro',
 ];
-echo "URI: " . $uri . "<br>";
 
 if (!empty($routes)) {
   // Create function to check route independently of the route defined in the array
@@ -28,3 +30,19 @@ if (!empty($routes)) {
   }
 }
 
+echo "URI: " . $uri . "<br>";
+$controllerArray = explode("@", $routes['/']);
+
+// $utils->dd($controllerArray);
+
+$count = 1;
+foreach ($routes as $route) {
+  $contArr = explode("@", $route);
+  echo "<h1>Controller:</h1>";
+  echo "<b>Class:</b> " . $contArr[0] . "<br>";
+  echo "<b>Method:</b> " . $contArr[1] . "<br>";
+  $count += 1;
+  // echo "<pre>";
+  // print_r(explode("@", $route));
+  // echo "</pre>";
+}
