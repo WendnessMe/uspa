@@ -5,7 +5,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use WendnessMe\Uspa\Config;
 use WendnessMe\Uspa\Utils;
 use WendnessMe\Uspa\Controllers;
-use WendnessMe\Uspa\Controllers\ApiController;
 
 $utils = new Utils();
 // $config = new Config();
