@@ -65,8 +65,8 @@ if (array_key_exists($uri, $routes)) {
 
 if (!empty($routes)) {
   // To-do:
-  // Create function to check route independently of the route defined in the array
-  // whether it was defined with a / (slash) or not.
+  // Validate if a route is valid whether it was defined with a / or not.
+
   if (array_key_exists($uri, $routes) == false) {
     echo "404";
     exit;
