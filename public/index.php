@@ -2,73 +2,65 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use WendnessMe\Uspa\Config;
 use WendnessMe\Uspa\Utils;
-use WendnessMe\Uspa\Controllers;
+
+header('Access-Control-Allow-Origin: *');
 
 $utils = new Utils();
-// $config = new Config();
-// $res = $config->query("SELECT * FROM test");
-// echo "<pre>";
-// var_dump($res);
-// echo "</pre>";
 
 $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
-// $uri = $_SERVER['REQUEST_URI'];
-// $uriPath = parse_url($uri);
-// $utils->dd($uriPath);
+$method = strtolower($_SERVER['REQUEST_METHOD']);
 
 $routes = [
-  '/' => 'HomeController@index',
-  // '/test' => 'HomeController@test',
-  // '/outro' => 'HomeController@outro',
-  '/api' => 'ApiController@hi',
-  '/all' => 'ApiController@getAll',
   '/api/get' => 'ApiController@getAll',
 ];
 
-$response = [
-  'error' => '',
-  'message' => [],
-];
-
 if (array_key_exists($uri, $routes)) {
-  header('Access-Control-Allow-Origin: *');
-  // header('Content-Type: application/json; charset=utf-8');
 
-  $controllerArray = explode("@", $routes[$uri]);
-  $controller = $controllerArray[0];
-  $cont = "WendnessMe\Uspa\Controllers\\" . $controller;
+  if ($method === "get") {
 
-  $import = new $cont();
-  // echo $import->hi();
-  // echo "<br>";
-  // $utils->dd($import->getAll());
-  $data = $import->getAll();
-  // $utils->dd($data);
-  // $response['message'] = ($data);
-  $response = [
-    'error' => '',
-    'status' => '200',
-    'message' => $data,
-  ];
+    header('Content-Type: application/json; charset=utf-8');
 
-  header('Content-Type: application/json; charset=utf-8');
+    $controller = explode("@", $routes[$uri])[0];
+    $controller = "WendnessMe\Uspa\Controllers\\" . $controller;
+    
+    $import = new $controller();
+    $data = $import->getAll();
 
-  // $utils->dd($response);
-  // print_r($response);
-  echo json_encode($response);
+    $response = [
+      'error' => '',
+      'status' => '200',
+      'content' => $data,
+    ];
+
+
+    echo json_encode($response);
+
+  } else {
+
+    http_response_code(405);
+
+    $response = [
+      'error' => 'Method not allowed',
+      'status'=> 405,
+      'content' => '',
+    ];
+
+    echo json_encode($response);
+  }
+
 } else {
+
   header('Content-Type: application/json; charset=utf-8');
-  header('Access-Control-Allow-Origin: *');
   http_response_code('404');
+
   $response = [
-    'error' => '404',
-    'message' => ['empty'],
+    'error' => 'Resource not found',
+    'status' => 404,
+    'content' => '',
   ];
-  $json = json_encode($response);
-  // return $json;
-  echo $json;
+
+  echo json_encode($response);
 }
 
 if (!empty($routes)) {
@@ -81,6 +73,3 @@ if (!empty($routes)) {
   }
 
 }
-
-// echo "URI: " . $uri . "<br>";
-$controllerArray = explode("@", $routes['/']);
