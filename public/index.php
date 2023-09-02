@@ -27,14 +27,48 @@ $routes = [
   '/api/get' => 'ApiController@getAll',
 ];
 
+$response = [
+  'error' => '',
+  'message' => [],
+];
+
 if (array_key_exists($uri, $routes)) {
+  header('Access-Control-Allow-Origin: *');
+  // header('Content-Type: application/json; charset=utf-8');
+
   $controllerArray = explode("@", $routes[$uri]);
   $controller = $controllerArray[0];
   $cont = "WendnessMe\Uspa\Controllers\\" . $controller;
+
   $import = new $cont();
-  echo $import->hi();
-  echo "<br>";
-  $utils->dd($import->getAll());
+  // echo $import->hi();
+  // echo "<br>";
+  // $utils->dd($import->getAll());
+  $data = $import->getAll();
+  // $utils->dd($data);
+  // $response['message'] = ($data);
+  $response = [
+    'error' => '',
+    'status' => '200',
+    'message' => $data,
+  ];
+
+  header('Content-Type: application/json; charset=utf-8');
+
+  // $utils->dd($response);
+  // print_r($response);
+  echo json_encode($response);
+} else {
+  header('Content-Type: application/json; charset=utf-8');
+  header('Access-Control-Allow-Origin: *');
+  http_response_code('404');
+  $response = [
+    'error' => '404',
+    'message' => ['empty'],
+  ];
+  $json = json_encode($response);
+  // return $json;
+  echo $json;
 }
 
 if (!empty($routes)) {
@@ -48,5 +82,5 @@ if (!empty($routes)) {
 
 }
 
-echo "URI: " . $uri . "<br>";
+// echo "URI: " . $uri . "<br>";
 $controllerArray = explode("@", $routes['/']);
