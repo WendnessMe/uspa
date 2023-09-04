@@ -27,6 +27,8 @@ if (array_key_exists($uri, $routes)) {
     $import = new $controller();
     $data = $import->getAll();
 
+    require __DIR__ . '/../database/FakeContacts.json';
+
     $response = [
       'error' => '',
       'status' => '200',
@@ -34,7 +36,7 @@ if (array_key_exists($uri, $routes)) {
     ];
 
 
-    echo json_encode($response);
+    // echo json_encode($response);
 
   } else {
 
