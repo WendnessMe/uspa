@@ -67,8 +67,6 @@ if (array_key_exists($uri, $routes)) {
 }
 
 if (!empty($routes)) {
-  // To-do:
-  // Validate if a route is valid whether it was defined with a / or not.
 
   if (array_key_exists($uri, $routes) == false) {
     $response = [
