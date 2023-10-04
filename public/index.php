@@ -12,6 +12,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
 $method = strtolower($_SERVER['REQUEST_METHOD']);
 
 $routes = [
+  '/' => 'ApiController@index',
   '/api/get' => 'ApiController@getAll',
 ];
 
@@ -24,19 +25,17 @@ if (array_key_exists($uri, $routes)) {
     $controller = explode("@", $routes[$uri])[0];
     $controller = "WendnessMe\Uspa\Controllers\\" . $controller;
     
+    $action = explode('@', $routes[$uri])[1];
     $import = new $controller();
-    $data = $import->getAll();
-
-    require __DIR__ . '/../database/FakeContacts.json';
+    $data = $import->$action();
 
     $response = [
-      'error' => '',
       'status' => '200',
       'content' => $data,
     ];
 
-
-    // echo json_encode($response);
+    echo json_encode($response);
+    exit;
 
   } else {
 
@@ -49,6 +48,7 @@ if (array_key_exists($uri, $routes)) {
     ];
 
     echo json_encode($response);
+    exit;
   }
 
 } else {
@@ -58,11 +58,12 @@ if (array_key_exists($uri, $routes)) {
 
   $response = [
     'error' => 'Resource not found',
-    'status' => 404,
+    'status' => "404",
     'content' => '',
   ];
 
   echo json_encode($response);
+  exit;
 }
 
 if (!empty($routes)) {
@@ -70,7 +71,13 @@ if (!empty($routes)) {
   // Validate if a route is valid whether it was defined with a / or not.
 
   if (array_key_exists($uri, $routes) == false) {
-    echo "404";
+    $response = [
+      'error' => 'Resource not found',
+      'status' => "404",
+      'content' => '',
+    ];
+
+    echo json_encode($response);
     exit;
   }
 

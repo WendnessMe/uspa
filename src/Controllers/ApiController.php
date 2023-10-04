@@ -8,9 +8,11 @@ class ApiController
 {
   public $dbConn;
 
-  public function hi ()
+  public function index ()
   {
-    return "hi";
+    $message = "Hi!";
+
+    return $message;
   }
 
   public function getAll ()
